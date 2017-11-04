@@ -1,3 +1,3 @@
-class role::webserver {
+class role::elasticsearchnode {
   include profile::chrony
 }
