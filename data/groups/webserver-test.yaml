@@ -1,0 +1,12 @@
+---
+
+# firewall services http & https
+firewalld::services:
+  'Allow HTTP from public zone':
+    ensure: present
+    service: http
+    zone: public
+  'Allow HTTPS from public zone':
+    ensure: present
+    service: https
+    zone: public
