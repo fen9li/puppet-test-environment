@@ -10,3 +10,9 @@ firewalld::services:
     ensure: present
     service: https
     zone: public
+
+# create vhosts
+apache::vhost: 
+  'first.fen9.li':
+    port: '80'
+    docroot: '/var/www/html'
