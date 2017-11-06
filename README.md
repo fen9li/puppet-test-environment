@@ -8,21 +8,24 @@ This project demos a solution to build 2 Apache vHOSTs upon a Linux host by usin
   - Puppet roles and profiles built upon existing Puppet modules
 
 # Purpose of this project
-Build 2 vhosts as per below defination by using Puppet.
+Build 2 Apache Webserver vhosts as per below defination by using Puppet.
 
 | Webserver / vhostname	| Physical Host		| Expose port	| 
+| :---			| :---			| :---		|
 |-----------------------|-----------------------|---------------|
 | first.fen9.li		| test31.fen9.li	| 80		|
-| second.fen9.li	| 192.168.200.31/24	| 80		| 
+| second.fen9.li	| test31.fen9.li	| 80		| 
 
 # How it works
+  
+  - On Puppet server
+    Git clone Puppet code to create a new puppet_test_environment
+    Install required Puppet modules in puppet_test_environment 
+    Update site.pp
+  - On Puppet agent
+    Run 'puppet agent --test --environment puppet_test_environment'
 
-  - Git clone Puppet code to create a new puppet_test_environment 
-  - Install required Puppet modules from Puppet Forge in puppet_test_environment 
-  - Update site.pp as per your individual designation
-  - Run 'puppet agent --test --environment puppet_test_environment' on Puppet agent
-
-# Resources consumed / used in this solution
+# Resources required in this solution
   - A Linux host/instance - Puppet Server
   - A Linux host/instance - Puppet Agent
 
@@ -35,15 +38,17 @@ Build 2 vhosts as per below defination by using Puppet.
 ## Setup Puppet Server & Agent
 
 * The hostname, IP addresses etc
-> Design as per your own environment.
+
+> Modify accordingly  as per your own environment.
 
 | hostname		| IP address		| Role		|
+| :---                  | :---                  | :---          |
 |-----------------------|-----------------------|---------------|
 | puppet.fen9.li	| 192.168.200.70/24	| Puppet Server |
 | test31.fen9.li	| 192.168.200.31/24	| Puppet Agent	| 
 
 * Install Puppet Server & Agent
-> Install Puppet software as per official instruction.
+> Install Puppet software as per official instructions.
 
 ```sh
 ...
@@ -51,10 +56,6 @@ puppet ~]# puppet --version
 5.3.2
 puppet ~]#
 
-puppet ~]$ git --version
-git version 1.8.3.1
-puppet ~]$ 
-...
 ...
 test31 ~]# puppet --version
 5.3.2
@@ -62,7 +63,7 @@ test31 ~]#
 ...
 ``` 
 
-* Setup Certification Between Pupper Server and Agent
+* Configure and Setup Certification Between Pupper Server and Agent
 > Ensure communication between Puppet Server and Agent
 
 ```sh
@@ -79,8 +80,8 @@ Notice: Applied catalog in 0.02 seconds
 test31 ~]# 
 ```
 
-## Use Puppet Codes to Create Apache Webserver
-> The Puppet codes is kept in GitHub Repo 'https://github.com/fen9li/puppet-test-environment.git'.
+## Create Apache Webserver
+> The demo Puppet codes is kept in GitHub Repo 'https://github.com/fen9li/puppet-test-environment.git'.
 > Please use features branch at this moment.
 
 * git clone Puppet codes on puppet server
@@ -90,16 +91,16 @@ puppet environments]# pwd
 /etc/puppetlabs/code/environments
 puppet environments]#
 
-[root@puppet environments]# git clone --branch features https://github.com/fen9li/puppet_test_environment.git
+puppet environments]# git clone --branch features https://github.com/fen9li/puppet_test_environment.git
 Cloning into 'puppet_test_environment'...
 remote: Counting objects: 74, done.
 remote: Compressing objects: 100% (49/49), done.
 remote: Total 74 (delta 14), reused 61 (delta 6), pack-reused 0
 Unpacking objects: 100% (74/74), done.
-[root@puppet environments]#
+puppet environments]#
 ``` 
 
-* The Puppet codes files and directories structure 
+* The files and directories structure would look like below ...
 
 ```sh
 puppet environments]# pwd
@@ -164,9 +165,11 @@ puppet puppet_test_environment]#
 ```
 
 ** Apply catalog on test31.fen9.li
+```sh
 test31 ~]# puppet agent --environment puppet_test_environment --test
 ...
 test31 ~]# 
+```
 
 ** Where to go next
 * Add more features to Apache Server(s).
