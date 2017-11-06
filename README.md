@@ -28,6 +28,14 @@ Build 2 Apache Webserver vhosts as per below defination by using Puppet.
   - A Linux host/instance - Puppet Server
   - A Linux host/instance - Puppet Agent
 
+> Modify accordingly  as per your own environment.
+
+| hostname		| IP address		| Role		|
+| :---                  | :---                  | :---          |
+| puppet.fen9.li	| 192.168.200.70/24	| Puppet Server |
+| test31.fen9.li	| 192.168.200.31/24	| Puppet Agent	| 
+
+
 # Github resources
   - A Github account 
   - A Github repository for Puppet codes
@@ -35,15 +43,6 @@ Build 2 Apache Webserver vhosts as per below defination by using Puppet.
 # Usage
 
 ## Setup Puppet Server & Agent
-
-* The hostname, IP addresses etc
-
-> Modify accordingly  as per your own environment.
-
-| hostname		| IP address		| Role		|
-| :---                  | :---                  | :---          |
-| puppet.fen9.li	| 192.168.200.70/24	| Puppet Server |
-| test31.fen9.li	| 192.168.200.31/24	| Puppet Agent	| 
 
 * Install Puppet Server & Agent
 > Install Puppet software as per official instructions.
