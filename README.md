@@ -12,7 +12,6 @@ Build 2 Apache Webserver vhosts as per below defination by using Puppet.
 
 | Webserver / vhostname	| Physical Host		| Expose port	| 
 | :---			| :---			| :---		|
-|-----------------------|-----------------------|---------------|
 | first.fen9.li		| test31.fen9.li	| 80		|
 | second.fen9.li	| test31.fen9.li	| 80		| 
 
@@ -43,7 +42,6 @@ Build 2 Apache Webserver vhosts as per below defination by using Puppet.
 
 | hostname		| IP address		| Role		|
 | :---                  | :---                  | :---          |
-|-----------------------|-----------------------|---------------|
 | puppet.fen9.li	| 192.168.200.70/24	| Puppet Server |
 | test31.fen9.li	| 192.168.200.31/24	| Puppet Agent	| 
 
