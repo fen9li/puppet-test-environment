@@ -18,11 +18,11 @@ Build 2 Apache Webserver vhosts as per below defination by using Puppet.
 # How it works
   
   - On Puppet server
-    Git clone Puppet code to create a new puppet_test_environment
-    Install required Puppet modules in puppet_test_environment 
-    Update site.pp
+    * Git clone Puppet code to create a new puppet_test_environment
+    * Install required Puppet modules in puppet_test_environment 
+    * Update site.pp
   - On Puppet agent
-    Run 'puppet agent --test --environment puppet_test_environment'
+    * Run 'puppet agent --test --environment puppet_test_environment'
 
 # Resources required in this solution
   - A Linux host/instance - Puppet Server
