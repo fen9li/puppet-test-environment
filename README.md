@@ -144,9 +144,11 @@ puppet environments]#
 * Install required Puppet Modules
 
 ```sh
-puppet environments]# puppet module install aboe-chrony --version 0.1.2 --environment puppet_test_environment
-puppet environments]# puppet module install puppetlabs-apache --version 2.3.0 --environment puppet_test_environment
-puppet environments]# puppet module install crayfishx-firewalld --version 3.4.0 --environment puppet_test_environment
+puppet environments]# puppet module install puppetlabs-stdlib --version 4.21.0 --target-dir /etc/puppetlabs/code/modules
+puppet environments]# puppet module install puppetlabs-concat --version 4.1.0 --target-dir /etc/puppetlabs/code/modules
+puppet environments]# puppet module install aboe-chrony --version 0.1.2 --target-dir /etc/puppetlabs/code/modules
+puppet environments]# puppet module install puppetlabs-apache --version 2.3.0 --target-dir /etc/puppetlabs/code/modules
+puppet environments]# puppet module install crayfishx-firewalld --version 3.4.0 --target-dir /etc/puppetlabs/code/modules
 ```
 
 * Update site.pp
@@ -165,13 +167,15 @@ puppet puppet_test_environment]#
 ```
 
 ## Apply catalog on test31.fen9.li
+> If test31.fen9.li is a brand new Linux host setup, then you may have to apply catalog twice.
+
 ```sh
 test31 ~]# puppet agent --environment puppet_test_environment --test
 ...
 test31 ~]# 
 ```
 
-## Test vHOSTs 'first.fen9.li' & 'second.fen9.li' 
+## Test accessing webpages on 'first.fen9.li' & 'second.fen9.li' 
 ```sh
 puppet ~]# grep test31.fen9.li /etc/hosts
 192.168.200.31  test31.fen9.li   test31
@@ -191,7 +195,7 @@ Accept-Ranges: bytes
 Content-Length: 28
 Content-Type: text/html
 
-wuwala from first.fen9.li...
+wulala from first.fen9.li...
 puppet ~]#
 
 puppet ~]# curl -i second.fen9.li
