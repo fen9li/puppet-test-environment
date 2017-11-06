@@ -110,32 +110,35 @@ drwxr-xr-x. root root unconfined_u:object_r:puppet_etc_t:s0 puppet_test_environm
 puppet environments]#
 
 puppet environments]# cd puppet_test_environment/
-puppet puppet_test_environment]# tree
+puppet environments]# tree
 .
 ├── data
-│   └── groups
-│       └── webserver-test.yaml
+│   └── groups
+│       ├── webserver-puppet_test_environment.yaml
+│       └── webserver-test.yaml
 ├── environment.conf
 ├── hiera.yaml
 ├── manifests
-│   └── site.pp
-└── modules
-    ├── flimodule
-    │   └── lib
-    │       └── facter
-    │           ├── elor.rb
-    │           └── vne.rb
-    ├── profile
-    │   └── manifests
-    │       ├── apache.pp
-    │       ├── chrony.pp
-    │       └── firewalld.pp
-    └── role
-        └── manifests
-            └── webserver.pp
+│   └── site.pp
+├── modules
+│   ├── flimodule
+│   │   └── lib
+│   │       └── facter
+│   │           ├── elor.rb
+│   │           └── vne.rb
+│   ├── profile
+│   │   └── manifests
+│   │       ├── apache.pp
+│   │       ├── chrony.pp
+│   │       └── firewalld.pp
+│   └── role
+│       └── manifests
+│           ├── elasticsearchnode.pp
+│           └── webserver.pp
+└── README.md
 
-11 directories, 10 files
-puppet puppet-test-environment]#
+11 directories, 13 files
+puppet environments]#
 ```
 
 * Install required Puppet Modules
