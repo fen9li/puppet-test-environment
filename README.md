@@ -164,13 +164,13 @@ node 'test31.fen9.li' {
 puppet puppet_test_environment]#
 ```
 
-** Apply catalog on test31.fen9.li
+## Apply catalog on test31.fen9.li
 ```sh
 test31 ~]# puppet agent --environment puppet_test_environment --test
 ...
 test31 ~]# 
 ```
 
-** Where to go next
+## Where to go next
 * Add more features to Apache Server(s).
 * Add more nodes for other purpose.
