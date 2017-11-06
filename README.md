@@ -169,5 +169,6 @@ test31 ~]#
 ```
 
 ## Where to go next
-* Add more features to Apache Server(s).
-* Add more nodes for other purpose.
+* Conbine AWS cloudformation, code deploy and Puppet to create a real infrasturcture-as-code environment.
+* Add more nodes for other purpose, such as elasticsearch cluster.
+* Add more features to Apache Server(s), such as tls support.
