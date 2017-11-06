@@ -171,6 +171,43 @@ test31 ~]# puppet agent --environment puppet_test_environment --test
 test31 ~]# 
 ```
 
+## Test vHOSTs 'first.fen9.li' & 'second.fen9.li' 
+```sh
+puppet ~]# grep test31.fen9.li /etc/hosts
+192.168.200.31  test31.fen9.li   test31
+puppet ~]#
+
+puppet ~]# echo '192.168.200.31 first.fen9.li first' >> /etc/hosts  
+puppet ~]# echo '192.168.200.31 second.fen9.li second' >> /etc/hosts
+puppet ~]#
+
+puppet ~]# curl -i first.fen9.li
+HTTP/1.1 200 OK
+Date: Mon, 06 Nov 2017 06:31:53 GMT
+Server: Apache/2.4.6 (CentOS)
+Last-Modified: Sun, 05 Nov 2017 23:56:31 GMT
+ETag: "1c-55d45164ba193"
+Accept-Ranges: bytes
+Content-Length: 28
+Content-Type: text/html
+
+wuwala from first.fen9.li...
+puppet ~]#
+
+puppet ~]# curl -i second.fen9.li
+HTTP/1.1 200 OK
+Date: Mon, 06 Nov 2017 06:32:01 GMT
+Server: Apache/2.4.6 (CentOS)
+Last-Modified: Sun, 05 Nov 2017 23:56:31 GMT
+ETag: "1d-55d45164bc0ef"
+Accept-Ranges: bytes
+Content-Length: 29
+Content-Type: text/html
+
+hulala from second.fen9.li...
+puppet ~]#
+```
+
 ## Where to go next
 * Conbine AWS cloudformation, code deploy and Puppet to create a real infrasturcture-as-code environment.
 * Add more nodes for other purpose, such as elasticsearch cluster.
