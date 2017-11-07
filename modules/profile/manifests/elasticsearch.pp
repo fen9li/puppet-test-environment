@@ -2,6 +2,8 @@ class profile::elasticsearch {
 
   class { 'elasticsearch':
     java_install => true,
+    manage_repo  => true,
+    repo_version => '5.x',
     restart_on_change => true,
 
     # setup REST API
@@ -15,6 +17,19 @@ class profile::elasticsearch {
     api_ca_path             => undef,
     validate_tls            => true,
 
+    datadir => '/var/lib/fli-test',
+
+    config => {
+      'cluster.name' => 'fli-test',
+      'indices.store.throttle.max_bytes_per_sec' => '15mb',
+
+      'index.number_of_shards' => 1,
+      'index.number_of_replicas' => 1,
+      'discovery.zen.ping.unicast.hosts' => "192.168.224.41, 192.168.224.42",
+      'discovery.zen.ping.multicast.enabled' => false,
+      'discovery.zen.minimum_master_nodes' => 1
+    },
+
     # configure elaseticsearch instances
     # the node name will be set to $hostname-$instance_name
     instances => {
@@ -23,7 +38,8 @@ class profile::elasticsearch {
           'cluster.name' => 'fli-test',
           'node.master' => true,
           'node.data' => true,
-          'network.host' =>  ['esnode41.fen9.li',_local_],
+          #'network.host' => [$facts['fqdn'],_local_],
+          'network.host' => [_local_],
           'transport.host' => '192.168.224.41'
         }
       }
