@@ -1,0 +1,4 @@
+---
+
+# elasticsearch instance name
+profile::elasticsearch::instance_name: 'es-02'

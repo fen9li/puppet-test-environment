@@ -1,4 +1,6 @@
-class profile::elasticsearch {
+class profile::elasticsearch (
+  String $instance_name,
+){
 
   class { 'elasticsearch':
     java_install => true,
@@ -17,23 +19,22 @@ class profile::elasticsearch {
     api_ca_path             => undef,
     validate_tls            => true,
 
+    jvm_options => ['-Xms1g','-Xmx1g'],
+
     datadir => '/var/lib/fli-test',
 
     config => {
       'cluster.name' => 'fli-test',
       'indices.store.throttle.max_bytes_per_sec' => '15mb',
 
-      'index.number_of_shards' => 1,
-      'index.number_of_replicas' => 1,
       'discovery.zen.ping.unicast.hosts' => "192.168.224.41, 192.168.224.42",
-      'discovery.zen.ping.multicast.enabled' => false,
-      'discovery.zen.minimum_master_nodes' => 1 
+      'discovery.zen.minimum_master_nodes' => 1
     },
 
     # configure elaseticsearch instances
     # the node name will be set to $hostname-$instance_name
     instances => {
-      'es-01' => {
+      $instance_name => {
         'config' => {
           'cluster.name' => 'fli-test',
           'node.master' => true,
@@ -46,15 +47,16 @@ class profile::elasticsearch {
   }
 
   # create elasticsearch yum repo
-  $es_yum_repo_file = "
-[elasticsearch-5.x]
+  $es_yum_repo_file = 
+"[elasticsearch-5.x]
 name=Elasticsearch repository for 5.x packages
 baseurl=https://artifacts.elastic.co/packages/5.x/yum
 gpgcheck=1
 gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
 enabled=1
 autorefresh=1
-type=rpm-md"
+type=rpm-md
+"
 
   file { '/etc/yum.repos.d/elasticsearch.repo':
     ensure => 'file',
