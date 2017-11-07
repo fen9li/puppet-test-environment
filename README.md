@@ -1,70 +1,91 @@
-# Build 2 Apache Webserver vHOSTs in One Linux Host by Using Puppet - Infrastructure as Code
+# Puppet's Way to Infrastructure as Code
 
-Infrastructure as code is the practice of treating infrastructure as if it were code — this gives power to apply software practices such aas version control, peer review, automated testing, release tagging, release promotion, and continuous delivery. 
-This project demos a solution to build 2 Apache vHOSTs upon a Linux host by using most updated Puppet practices.
+Infrastructure as code is the practice of treating infrastructure as if it were code — which gives it power to apply software practices such aas version control, peer review, automated testing, release tagging, release promotion, and continuous delivery.
+This project demos how Puppet can be used for this purpose. 
 
-  - Puppet Server 5.3.2
+  - Puppet Server 5.3.2 - newest version at the time of writing
   - Github based
-  - Puppet roles and profiles built upon existing Puppet modules
+  - Make full use of published general purpose Puppet modules - dont re invent the wheel
+  - Puppet roles and profiles architecture
+  - Ready to use solution to provision multi-nodes elasticsearch cluster
+  - A skeleton solution to provision Apache Webserver based on vHosts
 
-# Purpose of this project
-Build 2 Apache Webserver vhosts as per below defination by using Puppet.
+## Target Infrastructure 
+To demo how to build an enterprise infrastructure environment, this project will privision a two-nodes ElasticSearch Cluster and a two-vhosts Apache Webserver.
 
-| Webserver / vhostname	| Physical Host		| Expose port	| 
-| :---			| :---			| :---		|
-| first.fen9.li		| test31.fen9.li	| 80		|
-| second.fen9.li	| test31.fen9.li	| 80		| 
+### ElasticSearch Cluster (2 physical / virtual nodes, each runs an ElasticSearch instance.)
 
-# How it works
-  
+| Hostname 		| esnode41.fen9.li      | esnode42.fen9.li      | 
+| :---                  | :---                  | :---          	|
+| Configuration*	| 2 vCPU, 2GiB RAM, 2 NICs, 30GiB disk space 	| 2 vCPU, 2GiB RAM, 2 NICs, 30GiB disk space |
+| Role			| es master & data node | es master & data node |
+| NIC ens33 IP address - External / REST Traffic**	| 192.168.200.41/24  | 192.168.200.42/24	|
+| Default Gateway					| 192.168.200.2	     | 192.168.200.2    	|
+| NIC ens35 IP address - Cluster Traffic**		| 192.168.224.41/24  | 192.168.224.42/24	|	
+
+Note
+*: Listing configuration is for reference only. Please reference how many GiB RAM you have here when you configure the Java heapsize later.
+**: Each node has 2 NICs sitting in separate subnets. One subnet is for external / REST traffic and another is for Internal / Cluster traffic. The hostname, networking are supposed to configure during provisioning, thus wont be covered by Puppet.
+
+### Apache Webserver ( 2 vhosts in this example)
+
+| Webserver / vhostname | Physical Host         | Expose port   |
+| :---                  | :---                  | :---          |
+| first.fen9.li         | test31.fen9.li        | 80            |
+| second.fen9.li        | test31.fen9.li        | 80            |
+
+## How it works
+
   - On Puppet server
-    * Git clone Puppet code to create a new puppet_test_environment
-    * Install required Puppet modules in puppet_test_environment 
-    * Update site.pp
+    * Git clone Puppet codes to create a new puppet_test_environment
+    * Install required Puppet modules
+    * Update site.pp according to your own design
   - On Puppet agent
     * Run 'puppet agent --test --environment puppet_test_environment'
 
-# Resources required in this solution
-  - A Linux host/instance - Puppet Server
-  - A Linux host/instance - Puppet Agent
+## Resources required in this solution
+  - A must have Linux host/instance acts as Puppet Server
+  - Linux hosts/instances act(s) as Puppet Agent
 
-> Modify accordingly  as per your own environment.
+> Modify below design accordingly  as per your own environment.
 
-| hostname		| IP address		| Role		|
+| hostname              | IP address            | Role          |
 | :---                  | :---                  | :---          |
-| puppet.fen9.li	| 192.168.200.70/24	| Puppet Server |
-| test31.fen9.li	| 192.168.200.31/24	| Puppet Agent	| 
+| puppet.fen9.li        | 192.168.200.70/24     | Puppet Server |
+| esnode41.fen9.li      | 192.168.200.41/24     | Puppet Agent  |
+| esnode42.fen9.li      | 192.168.200.42/24     | Puppet Agent  |
+| test31.fen9.li        | 192.168.200.31/24     | Puppet Agent  |
 
-
-# Github resources
-  - A Github account 
+## Github resources
+  - A Github account
   - A Github repository for Puppet codes
 
-# Usage
+## Usage
 
-## Setup Puppet Server & Agent
+### Setup Puppet Server & Agent
 
 * Install Puppet Server & Agent
-> Install Puppet software as per official instructions.
+> Install Puppet Server and Agent software as per official instructions.
 
 ```sh
 ...
-puppet ~]# puppet --version
+puppet ~]# for i in puppet hiera; do $i --version; done
 5.3.2
+3.4.2
 puppet ~]#
 
 ...
-test31 ~]# puppet --version
+esnode41 ~]# puppet --version
 5.3.2
-test31 ~]#
+esnode41 ~]#
 ...
-``` 
+```
 
-* Configure and Setup Certification Between Pupper Server and Agent
+* Configure Certification Between Pupper Server and Agent
 > Ensure communication between Puppet Server and Agent
 
 ```sh
-test31 ~]# puppet agent --test
+esnode41 ~]# puppet agent --test
 Info: Caching certificate for test31.fen9.li
 Info: Caching certificate_revocation_list for ca
 Info: Caching certificate for test31.fen9.li
@@ -74,28 +95,26 @@ Info: Retrieving plugin
 Info: Caching catalog for test31.fen9.li
 Info: Applying configuration version '1509447198'
 Notice: Applied catalog in 0.02 seconds
-test31 ~]# 
+esnode41 ~]#
 ```
 
-## Create Apache Webserver
-> The demo Puppet codes is kept in GitHub Repo 'https://github.com/fen9li/puppet-test-environment.git'.
-> Please use features branch at this moment.
-
-* git clone Puppet codes on puppet server
+### On Puppet Server
+* Change directory to '/etc/puppetlabs/code/environments' and git clone Puppet codes
 
 ```sh
 puppet environments]# pwd
 /etc/puppetlabs/code/environments
 puppet environments]#
 
-puppet environments]# git clone --branch features https://github.com/fen9li/puppet_test_environment.git
+[root@puppet environments]# git clone --branch develop https://github.com/fen9li/puppet_test_environment.git
 Cloning into 'puppet_test_environment'...
-remote: Counting objects: 74, done.
-remote: Compressing objects: 100% (49/49), done.
-remote: Total 74 (delta 14), reused 61 (delta 6), pack-reused 0
-Unpacking objects: 100% (74/74), done.
-puppet environments]#
-``` 
+remote: Counting objects: 158, done.
+remote: Compressing objects: 100% (99/99), done.
+remote: Total 158 (delta 52), reused 127 (delta 28), pack-reused 0
+Receiving objects: 100% (158/158), 21.85 KiB | 0 bytes/s, done.
+Resolving deltas: 100% (52/52), done.
+[root@puppet environments]#
+```
 
 * The files and directories structure would look like below ...
 
@@ -113,9 +132,14 @@ puppet environments]# cd puppet_test_environment/
 puppet environments]# tree
 .
 ├── data
-│   └── groups
-│       ├── webserver-puppet_test_environment.yaml
-│       └── webserver-test.yaml
+│   ├── groups
+│   │   ├── elasticsearchnode-puppet_test_environment.yaml
+│   │   ├── elasticsearchnode-test.yaml
+│   │   ├── webserver-puppet_test_environment.yaml
+│   │   └── webserver-test.yaml
+│   └── nodes
+│       ├── esnode41.fen9.li.yaml
+│       └── esnode42.fen9.li.yaml
 ├── environment.conf
 ├── hiera.yaml
 ├── manifests
@@ -130,6 +154,7 @@ puppet environments]# tree
 │   │   └── manifests
 │   │       ├── apache.pp
 │   │       ├── chrony.pp
+│   │       ├── elasticsearch.pp
 │   │       └── firewalld.pp
 │   └── role
 │       └── manifests
@@ -137,82 +162,89 @@ puppet environments]# tree
 │           └── webserver.pp
 └── README.md
 
-11 directories, 13 files
+12 directories, 18 files
 puppet environments]#
 ```
 
-* Install required Puppet Modules
+* Install and double check required general purpose Puppet modules
 
 ```sh
 puppet environments]# puppet module install puppetlabs-stdlib --version 4.21.0 --target-dir /etc/puppetlabs/code/modules
+...
 puppet environments]# puppet module install puppetlabs-concat --version 4.1.0 --target-dir /etc/puppetlabs/code/modules
+...
 puppet environments]# puppet module install aboe-chrony --version 0.1.2 --target-dir /etc/puppetlabs/code/modules
+...
 puppet environments]# puppet module install puppetlabs-apache --version 2.3.0 --target-dir /etc/puppetlabs/code/modules
+...
 puppet environments]# puppet module install crayfishx-firewalld --version 3.4.0 --target-dir /etc/puppetlabs/code/modules
+...
+puppet environments]# puppet module install elastic-elasticsearch --version 5.4.3 --target-dir /etc/puppetlabs/code/modules
+
+...
+[root@puppet modules]# pwd
+/etc/puppetlabs/code/modules
+[root@puppet modules]#
+
+[root@puppet modules]# ls -lZ
+drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   apache
+drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   apt
+drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   archive
+drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   chrony
+drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   concat
+drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   datacat
+drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   elasticsearch
+drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   firewalld
+drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   java
+drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   stdlib
+drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   yum
+[root@puppet modules]#
+
 ```
 
-* Update site.pp
-> Update site.pp as per your environment
+## Create demo enterprise infrastructure
+
+### Update site.pp
 
 ```sh
-puppet puppet_test_environment]# pwd
+[root@puppet puppet_test_environment]# pwd
 /etc/puppetlabs/code/environments/puppet_test_environment
-puppet puppet_test_environment]# 
-
-puppet puppet_test_environment]# cat manifests/site.pp
+[root@puppet puppet_test_environment]# cat manifests/site.pp
 node 'test31.fen9.li' {
   include role::webserver
 }
-puppet puppet_test_environment]#
+
+node /esnode4[1-9].fen9.li/ {
+  include role::elasticsearchnode
+}
+[root@puppet puppet_test_environment]#
+
 ```
 
-## Apply catalog on test31.fen9.li
+### Apply catalog on esnode4x.fen9.li
+> If esnode4x.fen9.li is a brand new Linux host setup, then you may have to apply catalog twice.
+
+```sh
+esnode41 ~]# puppet agent  --test --environment puppet_test_environment
+...
+esnode41 ~]#
+...
+esnode42 ~]# puppet agent  --test --environment puppet_test_environment
+...
+esnode42 ~]#
+```
+
+### Apply catalog on test31.fen9.li
 > If test31.fen9.li is a brand new Linux host setup, then you may have to apply catalog twice.
 
 ```sh
 test31 ~]# puppet agent --environment puppet_test_environment --test
 ...
-test31 ~]# 
+test31 ~]#
 ```
 
-## Test accessing webpages on 'first.fen9.li' & 'second.fen9.li' 
-```sh
-puppet ~]# grep test31.fen9.li /etc/hosts
-192.168.200.31  test31.fen9.li   test31
-puppet ~]#
-
-puppet ~]# echo '192.168.200.31 first.fen9.li first' >> /etc/hosts  
-puppet ~]# echo '192.168.200.31 second.fen9.li second' >> /etc/hosts
-puppet ~]#
-
-puppet ~]# curl -i first.fen9.li
-HTTP/1.1 200 OK
-Date: Mon, 06 Nov 2017 06:31:53 GMT
-Server: Apache/2.4.6 (CentOS)
-Last-Modified: Sun, 05 Nov 2017 23:56:31 GMT
-ETag: "1c-55d45164ba193"
-Accept-Ranges: bytes
-Content-Length: 28
-Content-Type: text/html
-
-wulala from first.fen9.li...
-puppet ~]#
-
-puppet ~]# curl -i second.fen9.li
-HTTP/1.1 200 OK
-Date: Mon, 06 Nov 2017 06:32:01 GMT
-Server: Apache/2.4.6 (CentOS)
-Last-Modified: Sun, 05 Nov 2017 23:56:31 GMT
-ETag: "1d-55d45164bc0ef"
-Accept-Ranges: bytes
-Content-Length: 29
-Content-Type: text/html
-
-hulala from second.fen9.li...
-puppet ~]#
-```
+### Test new demo infrasturcture
+Testing can be done by following normal practice.
 
 ## Where to go next
-* Conbine AWS cloudformation, code deploy and Puppet to create a real infrasturcture-as-code environment.
-* Add more nodes for other purpose, such as elasticsearch cluster.
-* Add more features to Apache Server(s), such as tls support.
+* Conbine AWS cloudformation, code deploy and Puppet to create a real AWS-based infrasturcture-as-code environment.
