@@ -27,7 +27,7 @@ class profile::elasticsearch {
       'index.number_of_replicas' => 1,
       'discovery.zen.ping.unicast.hosts' => "192.168.224.41, 192.168.224.42",
       'discovery.zen.ping.multicast.enabled' => false,
-      'discovery.zen.minimum_master_nodes' => 1
+      'discovery.zen.minimum_master_nodes' => 1 
     },
 
     # configure elaseticsearch instances
@@ -38,9 +38,8 @@ class profile::elasticsearch {
           'cluster.name' => 'fli-test',
           'node.master' => true,
           'node.data' => true,
-          #'network.host' => [$facts['fqdn'],_local_],
-          'network.host' => [_local_],
-          'transport.host' => '192.168.224.41'
+          'network.host' => [$facts['fqdn'],_local_],
+          'transport.host' => $facts['networking']['interfaces']['ens35']['ip']
         }
       }
     }
