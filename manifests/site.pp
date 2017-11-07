@@ -2,6 +2,6 @@ node 'test31.fen9.li' {
   include role::webserver
 }
 
-node 'test32.fen9.li' {
+node 'esnode41.fen9.li' {
   include role::elasticsearchnode
 }

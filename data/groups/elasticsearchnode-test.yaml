@@ -1,0 +1,14 @@
+---
+
+# firewall ports for elasticsearch
+firewalld::ports:
+  'Allow REST port 9200 in the public zone':
+    ensure: present
+    zone: public
+    port: 9200
+    protocol: 'tcp'
+  'Allow Transport port 9300 in the public zone':
+    ensure: present
+    zone: public
+    port: 9300
+    protocol: 'tcp'
