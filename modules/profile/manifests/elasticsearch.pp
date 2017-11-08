@@ -47,13 +47,11 @@ class profile::elasticsearch (
   }
 
   yumrepo { 'elasticsearch-5.x':
-    name=Elasticsearch repository for 5.x packages,
-    baseurl=https://artifacts.elastic.co/packages/5.x/yum,
+    name => 'Elasticsearch repository for 5.x packages',
+    baseurl => 'https://artifacts.elastic.co/packages/5.x/yum',
     enabled => 1,
-    gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch,
-    gpgcheck=1,
-    autorefresh=1,
-    type=rpm-md,
+    gpgkey => 'https://artifacts.elastic.co/GPG-KEY-elasticsearch',
+    gpgcheck => 1,
   }
 }
 
