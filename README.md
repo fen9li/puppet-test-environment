@@ -268,7 +268,7 @@ esnode41 ~]# cat /etc/elasticsearch/es-01/elasticsearch.yml
 ### MANAGED BY PUPPET ###
 ---
 cluster.name: fli-test
-discovery.zen.minimum_master_nodes: 1
+discovery.zen.minimum_master_nodes: 2
 discovery.zen.ping.unicast.hosts: 192.168.224.41, 192.168.224.42
 indices.store.throttle.max_bytes_per_sec: 15mb
 network.host:
