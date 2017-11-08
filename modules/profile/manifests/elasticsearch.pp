@@ -28,7 +28,7 @@ class profile::elasticsearch (
       'indices.store.throttle.max_bytes_per_sec' => '15mb',
 
       'discovery.zen.ping.unicast.hosts' => "192.168.224.41, 192.168.224.42",
-      'discovery.zen.minimum_master_nodes' => 1
+      'discovery.zen.minimum_master_nodes' => 2
     },
 
     # configure elaseticsearch instances
