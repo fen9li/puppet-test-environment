@@ -108,14 +108,14 @@ puppet environments]# pwd
 /etc/puppetlabs/code/environments
 puppet environments]#
 
-[root@puppet environments]# git clone --branch develop https://github.com/fen9li/puppet_test_environment.git
+puppet environments]# git clone --branch develop https://github.com/fen9li/puppet_test_environment.git
 Cloning into 'puppet_test_environment'...
 remote: Counting objects: 158, done.
 remote: Compressing objects: 100% (99/99), done.
 remote: Total 158 (delta 52), reused 127 (delta 28), pack-reused 0
 Receiving objects: 100% (158/158), 21.85 KiB | 0 bytes/s, done.
 Resolving deltas: 100% (52/52), done.
-[root@puppet environments]#
+puppet environments]#
 ```
 
 * The files and directories structure would look like below ...
@@ -184,11 +184,11 @@ puppet environments]# puppet module install crayfishx-firewalld --version 3.4.0 
 puppet environments]# puppet module install elastic-elasticsearch --version 5.4.3 --target-dir /etc/puppetlabs/code/modules
 
 ...
-[root@puppet modules]# pwd
+puppet modules]# pwd
 /etc/puppetlabs/code/modules
-[root@puppet modules]#
+puppet modules]#
 
-[root@puppet modules]# ls -lZ
+puppet modules]# ls -lZ
 drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   apache
 drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   apt
 drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   archive
@@ -200,7 +200,7 @@ drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   firewalld
 drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   java
 drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   stdlib
 drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   yum
-[root@puppet modules]#
+puppet modules]#
 
 ```
 
@@ -211,7 +211,7 @@ drwxr-xr-x. root root unconfined_u:object_r:usr_t:s0   yum
 ```sh
 puppet puppet_test_environment]# pwd
 /etc/puppetlabs/code/environments/puppet_test_environment
-[root@puppet puppet_test_environment]# cat manifests/site.pp
+puppet puppet_test_environment]# cat manifests/site.pp
 node 'test31.fen9.li' {
   include role::webserver
 }
@@ -358,14 +358,14 @@ esnode41 ~]# curl localhost:9200/_cluster/state/master_node,nodes?pretty
 }
 esnode41 ~]#
 
-[root@esnode41 ~]# curl localhost:9200/_cat/health
+esnode41 ~]# curl localhost:9200/_cat/health
 1510113302 14:55:02 fli-test green 2 2 0 0 0 0 0 0 - 100.0%
-[root@esnode41 ~]#
+esnode41 ~]#
 
-[root@esnode41 ~]# curl localhost:9200/_cat/nodes
+esnode41 ~]# curl localhost:9200/_cat/nodes
 192.168.224.41 12 94 2 0.00 0.08 0.13 mdi * esnode41-es-01
 192.168.224.42 13 92 1 0.00 0.07 0.11 mdi - esnode42-es-02
-[root@esnode41 ~]#
+esnode41 ~]#
 
 ```
 
