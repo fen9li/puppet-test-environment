@@ -224,7 +224,7 @@ puppet puppet_test_environment]#
 ```
 
 ### Apply Catalog on esnode4x.fen9.li & test31.fen9.li
-> If esnode4x.fen9.li is a brand new Linux host setup, then you may have to apply catalog twice.
+> If esnode4x.fen9.li & test31.fen9.li are brand new Linux host setups, then you may have to apply catalog twice.
 
 > The safest way to apply catalog is keep running command 'puppet agent  --test --environment puppet_test_environment' until you dont see any changes apply. 
 
