@@ -46,22 +46,14 @@ class profile::elasticsearch (
     }
   }
 
-  # create elasticsearch yum repo
-  $es_yum_repo_file = 
-"[elasticsearch-5.x]
-name=Elasticsearch repository for 5.x packages
-baseurl=https://artifacts.elastic.co/packages/5.x/yum
-gpgcheck=1
-gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch
-enabled=1
-autorefresh=1
-type=rpm-md
-"
-
-  file { '/etc/yum.repos.d/elasticsearch.repo':
-    ensure => 'file',
-    content => $es_yum_repo_file,
+  yumrepo { 'elasticsearch-5.x':
+    name=Elasticsearch repository for 5.x packages,
+    baseurl=https://artifacts.elastic.co/packages/5.x/yum,
+    enabled => 1,
+    gpgkey=https://artifacts.elastic.co/GPG-KEY-elasticsearch,
+    gpgcheck=1,
+    autorefresh=1,
+    type=rpm-md,
   }
-
 }
 
