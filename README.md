@@ -1,7 +1,7 @@
 # Puppet's Way to Infrastructure as Code
 
 Infrastructure as code is the practice of treating infrastructure as if it were code — which gives it power to apply software practices such as version control, peer review, automated testing, release tagging, release promotion, and continuous delivery.
-This project demos how Puppet can be used for this purpose. 
+This project demos how Puppet can be used for this purpose.
 
   - Puppet Server 5.3.2 - newest version at the time of writing
   - Github based
@@ -10,18 +10,18 @@ This project demos how Puppet can be used for this purpose.
   - Ready to use solution to provision multi-nodes ElasticSearch cluster
   - A skeleton solution to provision Apache Webserver vHosts
 
-## Target Demo Infrastructure 
+## Target Demo Infrastructure
 To demo how to build an enterprise infrastructure environment by using Puppet, this project will privision a two-nodes ElasticSearch Cluster and a two-vhosts Apache Webserver.
 
 ### ElasticSearch Cluster (2 physical / virtual nodes, each runs an ElasticSearch instance.)
 
-| Hostname 		| esnode41.fen9.li      | esnode42.fen9.li      | 
-| :---                  | :---                  | :---          	|
-| Configuration(Note 1)	| 2 vCPU, 2GiB RAM, 2 NICs, 30GiB disk space 	| 2 vCPU, 2GiB RAM, 2 NICs, 30GiB disk space |
-| Role			| es master & data node | es master & data node |
-| NIC ens33 IP address - External / REST Traffic(Note 2)	| 192.168.200.41/24  | 192.168.200.42/24	|
-| Default Gateway					| 192.168.200.2	     | 192.168.200.2    	|
-| NIC ens35 IP address - Cluster Traffic(Note 2)		| 192.168.224.41/24  | 192.168.224.42/24	|	
+| Hostname              | esnode41.fen9.li      | esnode42.fen9.li      |
+| :---                  | :---                  | :---                  |
+| Configuration(Note 1) | 2 vCPU, 2GiB RAM, 2 NICs, 30GiB disk space    | 2 vCPU, 2GiB RAM, 2 NICs, 30GiB disk space |
+| Role                  | es master & data node | es master & data node |
+| NIC ens33 IP address - External / REST Traffic(Note 2)        | 192.168.200.41/24  | 192.168.200.42/24        |
+| Default Gateway                                       | 192.168.200.2      | 192.168.200.2            |
+| NIC ens35 IP address - Cluster Traffic(Note 2)                | 192.168.224.41/24  | 192.168.224.42/24        |
 
 >Note
 
@@ -245,8 +245,163 @@ test31 ~]# puppet agent --environment puppet_test_environment --test
 test31 ~]#
 ```
 
-### Test New Demo Infrasturcture
-Testing can be done by following normal practice.
+## Test New Demo Infrasturcture
+### Testing ElasticSearch Cluster
+
+* Check out elasticsearch service status, configuration files (listing only esnode41.fen9.li below)
+  
+```sh
+esnode41 ~]# systemctl status elasticsearch-es-01
+● elasticsearch-es-01.service - Elasticsearch instance es-01
+   Loaded: loaded (/usr/lib/systemd/system/elasticsearch-es-01.service; enabled; vendor preset: disabled)
+   Active: active (running) since Wed 2017-11-08 14:44:47 AEDT; 2min 2s ago
+     Docs: http://www.elastic.co
+ Main PID: 1846 (java)
+   CGroup: /system.slice/elasticsearch-es-01.service
+           └─1846 /bin/java -Dfile.encoding=UTF-8 -Dio.netty.noKeySetOptimiza...
+
+Nov 08 14:44:47 esnode41.fen9.li systemd[1]: Starting Elasticsearch instance....
+Nov 08 14:44:47 esnode41.fen9.li systemd[1]: Started Elasticsearch instance ....
+Nov 08 14:44:54 esnode41.fen9.li elasticsearch[1846]: [2017-11-08T14:44:53,92...
+Hint: Some lines were ellipsized, use -l to show in full.
+esnode41 ~]# 
+esnode41 ~]# cat /etc/elasticsearch/es-01/elasticsearch.yml
+### MANAGED BY PUPPET ###
+---
+cluster.name: fli-test
+discovery.zen.minimum_master_nodes: 1
+discovery.zen.ping.unicast.hosts: 192.168.224.41, 192.168.224.42
+indices.store.throttle.max_bytes_per_sec: 15mb
+network.host:
+- esnode41.fen9.li
+- _local_
+node.data: true
+node.master: true
+node.name: esnode41-es-01
+path.data: "/var/lib/fli-test/es-01"
+path.logs: "/var/log/elasticsearch/es-01"
+transport.host: 192.168.224.41
+
+esnode41 ~]#
+esnode41 ~]# grep 1g /etc/elasticsearch/es-01/jvm.options
+-Xms1g
+-Xmx1g
+esnode41 ~]#
+
+```
+
+* Check out elasticsearch cluster status
+
+```sh
+esnode41 ~]# curl localhost:9200
+{
+  "name" : "esnode41-es-01",
+  "cluster_name" : "fli-test",
+  "cluster_uuid" : "xJRm74RHQtKs4O0_bVMPuw",
+  "version" : {
+    "number" : "5.6.4",
+    "build_hash" : "8bbedf5",
+    "build_date" : "2017-10-31T18:55:38.105Z",
+    "build_snapshot" : false,
+    "lucene_version" : "6.6.1"
+  },
+  "tagline" : "You Know, for Search"
+}
+esnode41 ~]# curl esnode41:9200
+{
+  "name" : "esnode41-es-01",
+  "cluster_name" : "fli-test",
+  "cluster_uuid" : "xJRm74RHQtKs4O0_bVMPuw",
+  "version" : {
+    "number" : "5.6.4",
+    "build_hash" : "8bbedf5",
+    "build_date" : "2017-10-31T18:55:38.105Z",
+    "build_snapshot" : false,
+    "lucene_version" : "6.6.1"
+  },
+  "tagline" : "You Know, for Search"
+}
+esnode41 ~]# curl esnode42:9200
+{
+  "name" : "esnode42-es-02",
+  "cluster_name" : "fli-test",
+  "cluster_uuid" : "xJRm74RHQtKs4O0_bVMPuw",
+  "version" : {
+    "number" : "5.6.4",
+    "build_hash" : "8bbedf5",
+    "build_date" : "2017-10-31T18:55:38.105Z",
+    "build_snapshot" : false,
+    "lucene_version" : "6.6.1"
+  },
+  "tagline" : "You Know, for Search"
+}
+esnode41 ~]#
+
+esnode41 ~]# curl localhost:9200/_cluster/state/master_node,nodes?pretty
+{
+  "cluster_name" : "fli-test",
+  "master_node" : "UfeEFufuRduuAWck75ZCzQ",
+  "nodes" : {
+    "UfeEFufuRduuAWck75ZCzQ" : {
+      "name" : "esnode41-es-01",
+      "ephemeral_id" : "50zc6BHzR3aFPg1Iaqkv5g",
+      "transport_address" : "192.168.224.41:9300",
+      "attributes" : { }
+    },
+    "TYNmcKzhRQ-u0eJaN3djCA" : {
+      "name" : "esnode42-es-02",
+      "ephemeral_id" : "oN92ojxSSbK6uaWppH8Ksw",
+      "transport_address" : "192.168.224.42:9300",
+      "attributes" : { }
+    }
+  }
+}
+esnode41 ~]#
+
+[root@esnode41 ~]# curl localhost:9200/_cat/health
+1510113302 14:55:02 fli-test green 2 2 0 0 0 0 0 0 - 100.0%
+[root@esnode41 ~]#
+
+[root@esnode41 ~]# curl localhost:9200/_cat/nodes
+192.168.224.41 12 94 2 0.00 0.08 0.13 mdi * esnode41-es-01
+192.168.224.42 13 92 1 0.00 0.07 0.11 mdi - esnode42-es-02
+[root@esnode41 ~]#
+
+```
+
+### Testing Apache Webserver
+
+```sh
+puppet test]# tail -n 3 /etc/hosts
+192.168.200.31  test31.fen9.li   test31
+192.168.200.31 first.fen9.li first
+192.168.200.31 second.fen9.li second
+puppet test]#
+
+puppet test]# curl -i first.fen9.li
+HTTP/1.1 200 OK
+Date: Wed, 08 Nov 2017 03:30:57 GMT
+Server: Apache/2.4.6 (CentOS)
+Last-Modified: Wed, 08 Nov 2017 03:27:48 GMT
+ETag: "1d-55d70458e1a44"
+Accept-Ranges: bytes
+Content-Length: 29
+Content-Type: text/html
+
+wulala from first.fen9.li...
+puppet test]# curl -i second.fen9.li
+HTTP/1.1 200 OK
+Date: Wed, 08 Nov 2017 03:31:06 GMT
+Server: Apache/2.4.6 (CentOS)
+Last-Modified: Wed, 08 Nov 2017 03:27:48 GMT
+ETag: "1e-55d70458e4d0c"
+Accept-Ranges: bytes
+Content-Length: 30
+Content-Type: text/html
+
+hulala from second.fen9.li...
+puppet test]#
+```
 
 ## Where To Go Next
 * Conbine AWS cloudformation, code deploy and Puppet to create a real AWS-based infrasturcture-as-code environment.
