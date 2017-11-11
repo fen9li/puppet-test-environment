@@ -15,3 +15,9 @@ hierarchy:
   - name: "Other YAML hierarchy levels"
     paths:
       - "common.yaml"
+  - name: "Secret data (encrypted)"
+    lookup_key: eyaml_lookup_key # eyaml backend
+    path: "secret.eyaml"
+    options:
+        pkcs7_private_key: "/etc/puppetlabs/puppet/keys/private_key.pkcs7.pem"
+        pkcs7_public_key: "/etc/puppetlabs/puppet/keys/public_key.pkcs7.pem"
