@@ -1,0 +1,26 @@
+{
+  "name": "profile",
+  "version": "0.1.1",
+  "author": "Feng Li",
+  "summary": "fen9li profile module",
+  "license": "Apache-2.0",
+  "source": "https://github.com/fen9li/puppet_test_environment.git",
+  "project_page": "https://github.com/fen9li/puppet_test_environment.git",
+  "tags": [
+    "fen9li"
+  ],
+  "dependencies": [
+    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">= 4.17.0 < 5.0.0"
+    }
+  ],
+  "operatingsystem_support": [
+    {
+      "operatingsystem": "Centos",
+      "operatingsystemrelease": [
+        "7.4"
+      ]
+    }
+  ]
+}
